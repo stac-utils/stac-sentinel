@@ -21,7 +21,7 @@ setup(
     author_email='matt.a.hanson@gmail.com',
     version=__version__,
     description='Creating STAC Items for Sentinel',
-    url='https://github.com/stac-utils/sentinel-to-stac.git',
+    url='https://github.com/stac-utils/stac-sentinel.git',
     license='MIT',
     classifiers=[
         'Intended Audience :: Developers',
