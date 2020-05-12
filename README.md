@@ -1,4 +1,4 @@
-# sentinel-to-stac
+# stac-sentinel
 
 This repository is used for the creating [STAC Items](https://github.com/radiantearth/stac-spec) for [Sentinel remote sensing data](https://sentinel.esa.int) from their original metadata. Currently [Sentinel-1](https://sentinel.esa.int/web/sentinel/missions/sentinel-1) and [Sentinel-2](https://sentinel.esa.int/web/sentinel/missions/sentinel-2) data is supported.
 
@@ -7,27 +7,6 @@ The library includes:
 - STAC Collection metadata for [Sentinel-1 L1C](sentinel_to_stac/sentinel-s1-l1c.json), [Sentinel-2 L1C](sentinel_to_stac/sentinel-s2-l1c.json), and [Sentinel-2 L2A](sentinel_to_stac/sentinel-s2-l2a.json)
 - Python functions for transforming the original metadata of a scene (productInfo.json for Sentinel-1, tileInfo.json for Sentinel-2) into a STAC Item. See [sample Items](samples/)
 - A Command Line Interface (CLI) for converting the original metadata files to STAC
-
-
-## Table of Contents
-
-- [sentinel-to-stac](#sentinel-to-stac)
-  - [Table of Contents](#table-of-contents)
-  - [Public Catalogs](#public-catalogs)
-  - [Installation](#installation)
-  - [Usage](#usage)
-    - [Accessing Sentinel archive on AWS](#accessing-sentinel-archive-on-aws)
-    - [Command Line Interface](#command-line-interface)
-    - [Transforming individual scenes](#transforming-individual-scenes)
-- [transform a Sentinel-2 L1C scene](#transform-a-sentinel-2-l1c-scene)
-- [get tileInfo](#get-tileinfo)
-- [create an instance of SentinelSTAC for this scene](#create-an-instance-of-sentinelstac-for-this-scene)
-  - [STAC conversion notes](#stac-conversion-notes)
-    - [Sentinel-1](#sentinel-1)
-    - [Sentinel-2](#sentinel-2)
-  - [Development](#development)
-  - [About](#about)
-
 
 ## Public Catalogs
 
