@@ -1,0 +1,94 @@
+{
+    "path": "tiles/20/U/LD/2020/5/11/0",
+    "timestamp": "2020-05-11T15:28:27.555Z",
+    "utmZone": 20,
+    "latitudeBand": "U",
+    "gridSquare": "LD",
+    "datastrip": {
+        "id": "S2A_OPER_MSI_L2A_DS_SGS__20200511T193805_S20200511T152656_N02.14",
+        "path": "products/2020/5/11/S2A_MSIL2A_20200511T152631_N0214_R068_T20ULD_20200511T193805/datastrip/0"
+    },
+    "tileGeometry": {
+        "type": "Polygon",
+        "crs": {
+            "type": "name",
+            "properties": {
+                "name": "urn:ogc:def:crs:EPSG:8.8.1:32620"
+            }
+        },
+        "coordinates": [
+            [
+                [
+                    300000.0,
+                    5900040.0
+                ],
+                [
+                    409800.0,
+                    5900040.0
+                ],
+                [
+                    409800.0,
+                    5790240.0
+                ],
+                [
+                    300000.0,
+                    5790240.0
+                ],
+                [
+                    300000.0,
+                    5900040.0
+                ]
+            ]
+        ]
+    },
+    "tileDataGeometry": {
+        "type": "Polygon",
+        "crs": {
+            "type": "name",
+            "properties": {
+                "name": "urn:ogc:def:crs:EPSG:8.8.1:32620"
+            }
+        },
+        "coordinates": [
+            [
+                [
+                    349025.1470957386,
+                    5900039.0
+                ],
+                [
+                    409799.0,
+                    5900039.0
+                ],
+                [
+                    409799.0,
+                    5790241.0
+                ],
+                [
+                    316085.7470957386,
+                    5790241.0
+                ],
+                [
+                    349025.1470957386,
+                    5900039.0
+                ]
+            ]
+        ]
+    },
+    "tileOrigin": {
+        "type": "Point",
+        "crs": {
+            "type": "name",
+            "properties": {
+                "name": "urn:ogc:def:crs:EPSG:8.8.1:32620"
+            }
+        },
+        "coordinates": [
+            300000.0,
+            5900040.0
+        ]
+    },
+    "dataCoveragePercentage": 70.35,
+    "cloudyPixelPercentage": 0.0,
+    "productName": "S2A_MSIL2A_20200511T152631_N0214_R068_T20ULD_20200511T193805",
+    "productPath": "products/2020/5/11/S2A_MSIL2A_20200511T152631_N0214_R068_T20ULD_20200511T193805"
+}
