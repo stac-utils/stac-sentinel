@@ -1,1 +1,1 @@
-include sentinel_to_stac/*.json
+include stac_sentinel/*.json
