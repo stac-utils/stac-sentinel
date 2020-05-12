@@ -7,9 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 
-## [v0.0.1] - 2020-05-11
+## [v0.1.0] - 2020-05-11
 
 Initial Release
 
-[Unreleased]: https://github.com/stac-utils/stac-sentinel/compare/0.0.1...HEAD
-[v0.0.1]: https://github.com/stac-utils/stac-sentinel/tree/0.0.1
+[Unreleased]: https://github.com/stac-utils/stac-sentinel/compare/0.1.0...HEAD
+[v0.1.0]: https://github.com/stac-utils/stac-sentinel/tree/0.1.0
