@@ -48,6 +48,8 @@ def sentinel_s2(metadata):
         'sentinel:sequence': metadata['path'].split('/')[-1],
         'sentinel:product_id': metadata['productName']
     }
+    if 'dataCoveragePercentage' in metadata:
+        props['sentinel:data_coverage'] = metadata['dataCoveragePercentage']
     sid = str(metadata['utmZone']) + metadata['latitudeBand'] + metadata['gridSquare']
     level = metadata['datastrip']['id'].split('_')[3]
     id = '%s_%s_%s_%s_%s' % (metadata['productName'][0:3], sid,
