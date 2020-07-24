@@ -39,7 +39,6 @@ def sentinel_s2(metadata):
         'constellation': 'sentinel-2',
         'instruments': ['msi'],
         'gsd': 10,
-        'data_coverage': float(metadata['dataCoveragePercentage']),
         'view:off_nadir': 0,
         'eo:cloud_cover': float(metadata['cloudyPixelPercentage']),
         'proj:epsg': int(epsg),
@@ -49,7 +48,8 @@ def sentinel_s2(metadata):
         'sentinel:product_id': metadata['productName']
     }
     if 'dataCoveragePercentage' in metadata:
-        props['sentinel:data_coverage'] = metadata['dataCoveragePercentage']
+        props['sentinel:data_coverage'] = float(metadata['dataCoveragePercentage'])
+
     sid = str(metadata['utmZone']) + metadata['latitudeBand'] + metadata['gridSquare']
     level = metadata['datastrip']['id'].split('_')[3]
     id = '%s_%s_%s_%s_%s' % (metadata['productName'][0:3], sid,
