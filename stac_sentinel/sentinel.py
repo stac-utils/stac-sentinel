@@ -40,7 +40,6 @@ def sentinel_s2(metadata):
         'instruments': ['msi'],
         'gsd': 10,
         'view:off_nadir': 0,
-        'eo:cloud_cover': float(metadata['cloudyPixelPercentage']),
         'proj:epsg': int(epsg),
         'sentinel:latitude_band': metadata['latitudeBand'],
         'sentinel:grid_square': metadata['gridSquare'],
@@ -49,6 +48,8 @@ def sentinel_s2(metadata):
     }
     if 'dataCoveragePercentage' in metadata:
         props['sentinel:data_coverage'] = float(metadata['dataCoveragePercentage'])
+    if 'cloudyPixelPercentage' in metadata:
+        props['eo:cloud_cover'] = float(metadata['cloudyPixelPercentage'])
 
     sid = str(metadata['utmZone']) + metadata['latitudeBand'] + metadata['gridSquare']
     level = metadata['datastrip']['id'].split('_')[3]
