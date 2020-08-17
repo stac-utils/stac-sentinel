@@ -41,6 +41,7 @@ def sentinel_s2(metadata):
         'gsd': 10,
         'view:off_nadir': 0,
         'proj:epsg': int(epsg),
+        'sentinel:utm_zone': metadata['utmZone'],
         'sentinel:latitude_band': metadata['latitudeBand'],
         'sentinel:grid_square': metadata['gridSquare'],
         'sentinel:sequence': metadata['path'].split('/')[-1],
