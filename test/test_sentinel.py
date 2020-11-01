@@ -3,9 +3,9 @@ import unittest
 
 from datetime import datetime as dt
 import os.path as op
-
-from stac_sentinel import sentinel_s2_l1c, sentinel_s2_l2a
-
+import rasterio
+from stac_sentinel import sentinel_s2_l1c, sentinel_s2_l2a, sentinel_s1_rtc
+import pystac
 testpath = op.dirname(__file__)
 
 
@@ -33,3 +33,25 @@ class Test(unittest.TestCase):
         fname = op.join(testpath, collection_id + '.json')
         with open(fname, 'w') as f:
             f.write(json.dumps(item))
+
+    def test_sentinel_s1_rtc(self):
+        collection_id = 'sentinel-s1-rtc'
+        with rasterio.open(op.join(testpath, 'metadata', collection_id + '.tif')) as src:
+            metadata = src.profile
+            metadata.update(src.tags())
+        item = sentinel_s1_rtc(metadata)
+        fname = op.join(testpath, collection_id + '.json')
+        with open(fname, 'w') as f:
+            f.write(json.dumps(item))
+
+    def validate_sentinel_s1_rtc_collection(self):
+        collection_id = 'sentinel-s1-rtc'
+        fname = f'../stac_sentinel/{collection_id}.json'
+        collection = pystac.read_file(fname)
+        collection.validate()
+
+    def validate_sentinel_s1_rtc_item(self):
+        collection_id = 'sentinel-s1-rtc'
+        fname = op.join(testpath, collection_id + '.json')
+        item = pystac.read_file()
+        item.validate()
