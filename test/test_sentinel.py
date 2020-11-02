@@ -1,13 +1,13 @@
 import json
 import unittest
-
+import pytest
 from datetime import datetime as dt
 import os.path as op
 import rasterio
 from stac_sentinel import sentinel_s2_l1c, sentinel_s2_l2a, sentinel_s1_rtc
 import pystac
 testpath = op.dirname(__file__)
-
+rootpath = op.dirname(testpath)
 
 class Test(unittest.TestCase):
     """ Test main module """
@@ -44,14 +44,16 @@ class Test(unittest.TestCase):
         with open(fname, 'w') as f:
             f.write(json.dumps(item))
 
-    def validate_sentinel_s1_rtc_collection(self):
+    def test_validate_sentinel_s1_rtc_collection(self):
+        print(testpath)
         collection_id = 'sentinel-s1-rtc'
-        fname = f'../stac_sentinel/{collection_id}.json'
+        fname = f'{rootpath}/stac_sentinel/{collection_id}.json'
         collection = pystac.read_file(fname)
         collection.validate()
 
-    def validate_sentinel_s1_rtc_item(self):
+    @pytest.mark.xfail(raises=KeyError)
+    def test_validate_sentinel_s1_rtc_item(self):
         collection_id = 'sentinel-s1-rtc'
         fname = op.join(testpath, collection_id + '.json')
-        item = pystac.read_file()
-        item.validate()
+        item = pystac.read_file(fname)
+        item.validate() # fails b/c does not have 'links'
