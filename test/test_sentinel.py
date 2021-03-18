@@ -1,13 +1,13 @@
 import json
 import unittest
-
+import pytest
 from datetime import datetime as dt
 import os.path as op
-
-from stac_sentinel import sentinel_s2_l1c, sentinel_s2_l2a
-
+import rasterio
+from stac_sentinel import sentinel_s2_l1c, sentinel_s2_l2a, sentinel_s1_rtc
+import pystac
 testpath = op.dirname(__file__)
-
+rootpath = op.dirname(testpath)
 
 class Test(unittest.TestCase):
     """ Test main module """
@@ -33,3 +33,27 @@ class Test(unittest.TestCase):
         fname = op.join(testpath, collection_id + '.json')
         with open(fname, 'w') as f:
             f.write(json.dumps(item))
+
+    def test_sentinel_s1_rtc(self):
+        collection_id = 'sentinel-s1-rtc'
+        with rasterio.open(op.join(testpath, 'metadata', collection_id + '.tif')) as src:
+            metadata = src.profile
+            metadata.update(src.tags())
+        item = sentinel_s1_rtc(metadata)
+        fname = op.join(testpath, collection_id + '.json')
+        with open(fname, 'w') as f:
+            f.write(json.dumps(item))
+
+    def test_validate_sentinel_s1_rtc_collection(self):
+        print(testpath)
+        collection_id = 'sentinel-s1-rtc'
+        fname = f'{rootpath}/stac_sentinel/{collection_id}.json'
+        collection = pystac.read_file(fname)
+        collection.validate()
+
+    @pytest.mark.xfail(raises=KeyError)
+    def test_validate_sentinel_s1_rtc_item(self):
+        collection_id = 'sentinel-s1-rtc'
+        fname = op.join(testpath, collection_id + '.json')
+        item = pystac.read_file(fname)
+        item.validate() # fails b/c does not have 'links'

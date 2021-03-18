@@ -6,7 +6,8 @@ from dateutil.parser import parse
 from pyproj import Proj, transform as reproj
 from shapely import geometry
 from .version import __version__, __stac_version__
-
+import geopandas as gpd
+import io
 logger = logging.getLogger(__name__)
 
 
@@ -60,6 +61,88 @@ def sentinel_s2(metadata):
         'type': 'Feature',
         'stac_version': __stac_version__,
         'stac_extensions': ['eo', 'view', 'proj'],
+        'id': id,
+        'bbox': bbox,
+        'geometry': geom,
+        'properties':props
+    }
+    return item
+
+
+def sentinel_s1(metadata):
+    """ Parse metadata and return basic Item
+    with rasterio.open('/Users/scott/Data/sentinel1-rtc/local_incident_angle.tif') as src:
+        ...:      metadata = src.profile
+        ...:      metadata.update(src.tags())
+    """
+    def get_datetime(metadata):
+        ''' retrieve UTC start time from tif metadata'''
+        times = []
+        for i in range(1, int(metadata['NUMBER_SCENES'])+1):
+            m = json.loads(metadata[f'SCENE_{i}_METADATA'])
+            times += [m['start_time'], m['end_time']]
+        return min(times)
+
+    def get_orbits(metadata):
+        ''' https://forum.step.esa.int/t/sentinel-1-relative-orbit-from-filename/7042 '''
+        adjust = {'S1B':27, 'S1A':73}
+        abs_orbit = int(metadata['ABSOLUTE_ORBIT_NUMBER'])
+        rel_orbit = ((abs_orbit - adjust[metadata['MISSION_ID']]) % 175) + 1
+        return abs_orbit, rel_orbit
+
+    def get_geometry(metadata):
+        ''' determine valid pixel footprint and bbox '''
+        # get MGRS grid square footprint
+        gridfile = op.join(op.dirname(__file__), 'sentinel1-rtc-conus-grid.geojson')
+        gf = gpd.read_file(gridfile)
+        gf.rename(columns=dict(id='tile'), inplace=True)
+        gf_grid = gf[gf.tile == metadata['TILE_ID']]
+        bbox = list(gf_grid.total_bounds)
+
+        # read GRD frame footprints
+        frames = []
+        for i in range(1, int(metadata['NUMBER_SCENES'])+1):
+            m = json.loads(metadata[f'SCENE_{i}_METADATA'])
+            frames.append(gpd.read_file(io.StringIO(m['footprint'])))
+        footprints = gpd.pd.concat(frames)
+
+        # get valid data footprint
+        intersection = gpd.overlay(gf_grid, footprints, how='intersection')
+        valid_footprint = intersection.unary_union.convex_hull
+        geom = {"type": "Polygon",
+                "coordinates":[list(valid_footprint.exterior.coords)]}
+        return bbox, geom
+
+    dt = parse(get_datetime(metadata))
+    abs_orbit, rel_orbit = get_orbits(metadata)
+    bbox, geom = get_geometry(metadata)
+
+    # Item properties
+    props = {
+        'datetime': dt.strftime('%Y-%m-%dT%H:%M:%SZ'),
+        'platform': metadata['MISSION_ID'],
+        'constellation': 'sentinel-1',
+        'instruments': ['c-sar'],
+        'gsd': 20,
+        'proj:epsg': metadata['crs'].to_epsg(),
+        'sentinel:utm_zone': metadata['TILE_ID'][:2],
+        'sentinel:latitude_band': metadata['TILE_ID'][3],
+        'sentinel:grid_square': metadata['TILE_ID'][4:],
+        'sentinel:product_id': metadata['SCENES'].split(','),
+        'sat:orbit_state': metadata['ORBIT_DIRECTION'],
+        'sat:absolute_orbit': abs_orbit,
+        'sat:relative_orbit': rel_orbit
+    }
+    # match key s3://sentinel-s1-rtc-indigo/tiles/RTC/1/IW/12/S/YJ/2016/S1B_20161121_12SYJ_ASC
+    DATE = metadata['DATE'].replace('-','')
+    orbNames = {'ascending':'ASC', 'decending':'DSC'}
+    ORB = orbNames[metadata['ORBIT_DIRECTION']]
+    id = f"{metadata['MISSION_ID']}_{DATE}_{metadata['TILE_ID']}_{ORB}"
+
+    item = {
+        'type': 'Feature',
+        'stac_version': __stac_version__,
+        'stac_extensions': ['sar', 'sat', 'proj'],
         'id': id,
         'bbox': bbox,
         'geometry': geom,
@@ -123,5 +206,19 @@ def sentinel_s2_l2a(metadata, base_url=''):
     assets['visual_60m']['href'] = op.join(base_url, 'R60m/TCI.jp2')
     assets['B01']['href'] = op.join(base_url, 'R60m/B01.jp2')
     assets['B09']['href'] = op.join(base_url, 'R60m/B09.jp2')
+    item['assets'] = assets
+    return item
+
+
+def sentinel_s1_rtc(metadata, base_url=''):
+    collection_id = 'sentinel-s1-rtc'
+    item = sentinel_s1(metadata)
+    item['collection'] = collection_id
+    assets = get_collection(collection_id)['item_assets']
+    # links back to GRD data?
+    assets['GAMMA0_VV']['href'] = op.join(base_url, 'Gamma0_VH.tif')
+    assets['GAMMA0_VH']['href'] = op.join(base_url, 'Gamma0_VV.tif')
+    assets['INCIDENCE']['href'] = op.join(base_url, 'local_incident_angle.tif')
+
     item['assets'] = assets
     return item
