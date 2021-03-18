@@ -40,15 +40,19 @@ def sentinel_s2(metadata):
         'constellation': 'sentinel-2',
         'instruments': ['msi'],
         'gsd': 10,
-        'data_coverage': float(metadata['dataCoveragePercentage']),
         'view:off_nadir': 0,
-        'eo:cloud_cover': float(metadata['cloudyPixelPercentage']),
         'proj:epsg': int(epsg),
+        'sentinel:utm_zone': metadata['utmZone'],
         'sentinel:latitude_band': metadata['latitudeBand'],
         'sentinel:grid_square': metadata['gridSquare'],
         'sentinel:sequence': metadata['path'].split('/')[-1],
         'sentinel:product_id': metadata['productName']
     }
+    if 'dataCoveragePercentage' in metadata:
+        props['sentinel:data_coverage'] = float(metadata['dataCoveragePercentage'])
+    if 'cloudyPixelPercentage' in metadata:
+        props['eo:cloud_cover'] = float(metadata['cloudyPixelPercentage'])
+
     sid = str(metadata['utmZone']) + metadata['latitudeBand'] + metadata['gridSquare']
     level = metadata['datastrip']['id'].split('_')[3]
     id = '%s_%s_%s_%s_%s' % (metadata['productName'][0:3], sid,
@@ -170,12 +174,6 @@ def sentinel_s2_l1c(metadata, base_url=''):
     assets['B11']['href'] = op.join(base_url, 'B11.jp2')
     assets['B12']['href'] = op.join(base_url, 'B12.jp2')
     item['assets'] = assets
-    # remove some asset properties that are defined at collection
-    for key in assets:
-        assets[key].pop('description', None)
-        assets[key].pop('eo:bands', None)
-        assets[key].pop('gsd', None)
-        assets[key].pop('roles', None)
     return item
 
 
@@ -208,12 +206,6 @@ def sentinel_s2_l2a(metadata, base_url=''):
     assets['visual_60m']['href'] = op.join(base_url, 'R60m/TCI.jp2')
     assets['B01']['href'] = op.join(base_url, 'R60m/B01.jp2')
     assets['B09']['href'] = op.join(base_url, 'R60m/B09.jp2')
-    # remove some asset properties that are defined at collection
-    for key in assets:
-        assets[key].pop('description', None)
-        assets[key].pop('eo:bands', None)
-        assets[key].pop('gsd', None)
-        assets[key].pop('roles', None)
     item['assets'] = assets
     return item
 
