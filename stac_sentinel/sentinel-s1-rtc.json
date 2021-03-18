@@ -1,0 +1,100 @@
+{
+    "stac_version": "1.0.0-beta.2",
+    "stac_extensions": [
+        "item-assets"
+    ],
+    "id": "sentinel-s1-rtc",
+    "title": "Sentinel 1 RTC",
+    "description": "Sentinel-1a and Sentinel-1b radiometric terrain corrected (RTC) synthetic aperture radar (SAR) backscatter",
+    "keywords": [
+        "sentinel",
+        "radar",
+        "earth observation",
+        "esa"
+    ],
+    "extent": {
+        "spatial": [
+          -124.848,
+          24.396,
+          -66.885,
+          49.384
+        ],
+        "temporal": [
+            "2016-11-21T01:09:10.000Z",
+            null
+        ]
+    },
+    "providers": [
+        {
+            "name": "ESA",
+            "roles": ["producer"],
+            "url": "https://earth.esa.int/web/guest/home"
+        },
+        {
+            "name": "Indigo Ag Inc.",
+            "roles": ["processor"],
+            "url": "https://registry.opendata.aws/sentinel-1-rtc-indigo/"
+        },
+        {
+            "name": "AWS",
+            "roles": ["host"],
+            "url": "https://registry.opendata.aws/sentinel-1-rtc-indigo/"
+        },
+        {
+            "name": "Element 84",
+            "roles": ["processor"],
+            "url": "https://element84.com"
+        }
+    ],
+    "license": "proprietary",
+    "summaries": {
+        "platform": ["S1A", "S1B"],
+        "constellation": ["sentinel-1"],
+        "instruments": ["msi"],
+        "gsd":[20],
+        "sar:product_type": ["RTC"],
+        "sar:frequency_band": ["C"],
+        "sar:polarizations": ["VV", "VH"],
+        "sar:center_frequency": [5.405],
+        "sar:resolution_range": [20.3],
+        "sar:resolution_azimuth": [22.6],
+        "sar:pixel_spacing_range": [10],
+        "sar:pixel_spacing_azimuth": [10],
+        "sar:looks_equivalent_number": [4.4],
+        "sar:looks_range": [5],
+        "sar:looks_azimuth": [1],
+        "sar:observation_direction": ["right"]
+    },
+    "item_assets": {
+        "GAMMA0_VV": {
+            "title": "gamma0 (vv)",
+            "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+            "roles": ["data"],
+            "gsd": 20,
+            "sar:polarizations": ["VV"]
+        },
+        "GAMMA0_VH": {
+            "title": "gamma0 (vh)",
+            "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+            "roles": ["data"],
+            "gsd": 20,
+            "sar:polarizations": ["VH"]
+        },
+        "INCIDENCE": {
+            "title": "local incidence angle",
+            "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+            "roles": ["data"],
+            "gsd": 20
+        }
+    },
+    "links": [
+        {
+            "rel": "license",
+            "href": "https://www.indigoag.com/forms/atlas-sentinel-license"
+        },
+        {
+            "rel": "about",
+            "href": "https://github.com/stac-utils/stac-sentinel"
+        }
+    ]
+}
